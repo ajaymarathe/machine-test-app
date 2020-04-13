@@ -1,0 +1,81 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <a class="navbar-brand d-flex align-items-center" href="#"> <span class="material-icons">insert_drive_file</span>Report</a>
+  <span class="text-white"> Indivisual pin code report for 560040</span>
+</nav>
+
+<div class="container-fluid " >
+  <div class="row">
+
+     <!-- select chart section  -->
+     <div class="col-md-2 border pt-3">
+        <h3>
+           <span class="material-icons">pie_chart </span> Charts
+        </h3>
+        <p>First select the chart from below dropdown and then drag the dataset</p>
+        <div class="dropdown">
+           <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+           <span class="glyphicon glyphicon-signal"></span> Select Charts
+           </button>
+           <div class="dropdown-menu">
+              <a *ngFor="let chart of charts; let i = index" class="dropdown-item" href="#"
+              (click)="onSelectChart(chart,i)"><span class="text-capitalize">{{chart}}</span></a>
+           </div>
+        </div>
+     </div>
+
+     <!-- Chart render section  -->
+      <div class="col-md-8 border pt-3">
+        <h3><span class="material-icons">check_circle</span> Canvas</h3>
+        <span>User selected chart will render here!</span>
+        <div *ngIf="selectedChart" class="w-100 h-100">
+           <div class="chart">
+              <div *ngIf="selectedChart != 'card'; else showcard">
+                 <!-- here chart component -->
+                 <app-highcharts [chart]="selectedChart" (setChart)="onSetChart($event)"></app-highcharts>
+              </div>
+              <!-- card chart section  -->
+              <ng-template #showcard>
+                 <div *ngIf="selectedChart === 'card'">
+                    <div class="container">
+                       <div>
+                          <div *ngFor="let card of cardJson">
+                             <div class="row ">
+                                <div class="col-md-6">
+                                   <div class="d-flex justify-content-between">
+                                      <span class="text-capitalize">{{card.name}} :</span>
+                                      <span class="">{{card.count}}</span>
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+                          <div *ngIf="cardJson">
+                          </div>
+                       </div>
+                    </div>
+                 </div>
+              </ng-template>
+           </div>
+        </div>
+
+        <!-- drag chart section  -->
+        <div [ngClass]="{'selected': !selectedChart}">
+          <p>Please drag and drop dataset from data section here ! </p>
+          <div class="drop_zone" dnd-droppable (onDropSuccess)="onAddDataset($event)" [dropZones]="['source-dropZone']">
+            <span class="dataset_name">{{dropDataset}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- data set section  -->
+      <div class="col-md-2 pt-3 border">
+          <h3><span class="glyphicon glyphicon-file"></span> Data</h3>
+          <p>Please drag dataset form into dataset drop zone !</p>
+          <div *ngFor="let dataset of datasets" dnd-draggable [dropZones]="['source-dropZone']" [dragEnabled]="true"
+            [dragData]="dataset">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item grab">{{dataset}} </li>
+            </ul>
+          </div>
+      </div>
+  </div>
+</div>
